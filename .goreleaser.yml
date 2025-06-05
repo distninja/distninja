@@ -1,0 +1,22 @@
+---
+builds:
+  - id: clone
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+    goarch:
+      - amd64
+    dir: .
+    main: main.go
+    binary: distninja
+    flags:
+      - -trimpath
+    ldflags: -s -w -X main.BuildTime={{.Date}} -X main.CommitID={{.ShortCommit}}
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - Merge pull request
+      - Merge branch
