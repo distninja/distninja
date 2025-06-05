@@ -30,6 +30,7 @@ jobs:
         with:
           fetch-depth: 1
       - name: Run lint
-        uses: golangci/golangci-lint-action@v2
+        uses: golangci/golangci-lint-action@v3
+        timeout-minutes: 10
         with:
           version: latest
