@@ -10,7 +10,7 @@ jobs:
   release:
     runs-on: ubuntu-latest
     env:
-      GITHUB_TOKEN: ${{ secrets.DISTBUILD_TOKEN }}
+      GITHUB_TOKEN: ${{ secrets.DISTNINJA_TOKEN }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -26,11 +26,11 @@ jobs:
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
-          password: ${{ secrets.DISTBUILD_TOKEN }}
+          password: ${{ secrets.DISTNINJA_TOKEN }}
       - name: Create release
         uses: goreleaser/goreleaser-action@v2
         with:
           version: latest
           args: release --clean
         env:
-          GITHUB_TOKEN: ${{ secrets.DISTBUILD_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.DISTNINJA_TOKEN }}
