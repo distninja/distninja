@@ -19,9 +19,18 @@ distninja is a distributed build system
 
 
 
-## Usage
+## Deploy
+
+### Start gRPC server
 
 ```
+distninja --grpc-serve :9090
+```
+
+### Start HTTP server
+
+```
+distninja --http-serve :9091
 ```
 
 
