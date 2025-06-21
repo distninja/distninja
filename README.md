@@ -15,7 +15,7 @@ distninja is a distributed build system
 
 ## Features
 
-- **Graph Database Power** - Uses [Cayley](https://github.com/cayleygraph/cayley)'s quad-based storage for complex relationships
+- **Graph Database Power** - Uses [cayley](https://github.com/distninja/cayley)'s quad-based storage for complex relationships
 - **Schema Support** - Structured data with Go struct mapping
 - **Rich Queries** - Path-based queries for complex dependency analysis
 - **Relationship Modeling** - Explicit modeling of all Ninja relationships
@@ -48,5 +48,6 @@ Project License can be found [here](LICENSE).
 
 ## Reference
 
+- [cayley](https://github.com/distninja/cayley)
 - [ninja](https://github.com/ninja-build/ninja)
 - [ninja-build](https://gist.github.com/craftslab/a9cacfa5a18858a4c82e910f1462622b)
