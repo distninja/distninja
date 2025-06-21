@@ -6,6 +6,8 @@ import (
 	"os"
 
 	"github.com/spf13/cobra"
+
+	"github.com/distninja/distninja/server"
 )
 
 var (
@@ -29,13 +31,25 @@ var serveCmd = &cobra.Command{
 func init() {
 	rootCmd.AddCommand(serveCmd)
 
-	serveCmd.PersistentFlags().StringVarP(&grpcAddress, "grpc", "g", ":9090", "grpc address")
-	serveCmd.PersistentFlags().StringVarP(&httpAddress, "http", "t", ":8080", "http address")
+	serveCmd.PersistentFlags().StringVarP(&grpcAddress, "grpc", "g", "", "grpc address")
+	serveCmd.PersistentFlags().StringVarP(&httpAddress, "http", "t", "", "http address")
 
 	serveCmd.MarkFlagsOneRequired("grpc", "http")
 	serveCmd.MarkFlagsMutuallyExclusive("grpc", "http")
 }
 
 func runServe(ctx context.Context) error {
-	return nil
+	if grpcAddress != "" {
+		fmt.Printf("Starting gRPC server on %s\n", grpcAddress)
+		return server.StartGRPCServer(ctx, grpcAddress)
+	}
+
+	if httpAddress != "" {
+		fmt.Printf("Starting HTTP server on %s\n", httpAddress)
+		return server.StartHTTPServer(ctx, httpAddress)
+	}
+
+	fmt.Printf("Starting HTTP server on %s\n", httpAddress)
+
+	return server.StartHTTPServer(ctx, httpAddress)
 }
