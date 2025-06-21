@@ -24,18 +24,18 @@ distninja is a distributed build system
 
 
 
-## Deploy
+## Usage
 
-### gRPC server
+### 1. Run grpc server
 
+```bash
+distninja serve [--grpc string]
 ```
-distninja --grpc-serve :9090
-```
 
-### HTTP server
+### 2. Run http server
 
-```
-distninja --http-serve :9091
+```bash
+distninja serve [--http string]
 ```
 
 

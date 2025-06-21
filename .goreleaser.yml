@@ -1,6 +1,6 @@
 ---
 builds:
-  - id: clone
+  - id: distninja
     env:
       - CGO_ENABLED=0
     goos:
@@ -14,7 +14,7 @@ builds:
     binary: distninja
     flags:
       - -trimpath
-    ldflags: -s -w -X main.BuildTime={{.Date}} -X main.CommitID={{.ShortCommit}}
+    ldflags: -s -w -X github.com/distninja/distninja/cmd.BuildTime={{.Date}} -X github.com/distninja/distninja/cmd.CommitID={{.ShortCommit}}
 
 changelog:
   sort: asc

@@ -2,7 +2,7 @@
 
 buildTime=$(date +%FT%T%z)
 commitID=`git rev-parse --short=7 HEAD`
-ldflags="-s -w -X main.BuildTime=$buildTime -X main.CommitID=$commitID"
+ldflags="-s -w -X github.com/distninja/distninja/cmd.BuildTime=$buildTime -X github.com/distninja/distninja/cmd.CommitID=$commitID"
 target="distninja"
 
 go env -w GOPROXY=https://goproxy.cn,direct
