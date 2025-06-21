@@ -31,6 +31,9 @@ func init() {
 
 	serveCmd.PersistentFlags().StringVarP(&grpcAddress, "grpc", "g", ":9090", "grpc address")
 	serveCmd.PersistentFlags().StringVarP(&httpAddress, "http", "t", ":8080", "http address")
+
+	serveCmd.MarkFlagsOneRequired("grpc", "http")
+	serveCmd.MarkFlagsMutuallyExclusive("grpc", "http")
 }
 
 func runServe(ctx context.Context) error {

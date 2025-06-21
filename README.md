@@ -29,13 +29,13 @@ distninja is a distributed build system
 ### 1. Run grpc server
 
 ```bash
-distninja serve [--grpc string]
+distninja serve --grpc <string>
 ```
 
 ### 2. Run http server
 
 ```bash
-distninja serve [--http string]
+distninja serve --http <string>
 ```
 
 
