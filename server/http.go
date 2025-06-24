@@ -57,21 +57,24 @@ func StartHTTPServer(ctx context.Context, address, _store string) error {
 
 	// Build endpoints
 	v1.HandleFunc("/builds", createBuildHandler).Methods("POST")
+	v1.HandleFunc("/builds", optionsHandler).Methods("OPTIONS")
 	v1.HandleFunc("/builds/stats", getBuildStatsHandler).Methods("GET")
 	v1.HandleFunc("/builds/order", getBuildOrderHandler).Methods("GET")
 	v1.HandleFunc("/builds/{id}", getBuildHandler).Methods("GET")
 
 	// Rule endpoints
 	v1.HandleFunc("/rules", createRuleHandler).Methods("POST")
-	v1.HandleFunc("/rules/{name}", getRuleHandler).Methods("GET")
+	v1.HandleFunc("/rules", optionsHandler).Methods("OPTIONS")
 	v1.HandleFunc("/rules/{name}/targets", getTargetsByRuleHandler).Methods("GET")
+	v1.HandleFunc("/rules/{name}", getRuleHandler).Methods("GET")
 
 	// Target endpoints
 	v1.HandleFunc("/targets", getAllTargetsHandler).Methods("GET")
-	v1.HandleFunc("/targets/{path:.*}", getTargetHandler).Methods("GET")
 	v1.HandleFunc("/targets/{path:.*}/dependencies", getTargetDependenciesHandler).Methods("GET")
 	v1.HandleFunc("/targets/{path:.*}/dependents", getTargetDependentsHandler).Methods("GET")
 	v1.HandleFunc("/targets/{path:.*}/status", updateTargetStatusHandler).Methods("PUT")
+	v1.HandleFunc("/targets/{path:.*}/status", optionsHandler).Methods("OPTIONS")
+	v1.HandleFunc("/targets/{path:.*}", getTargetHandler).Methods("GET")
 
 	// Analysis endpoints
 	v1.HandleFunc("/analysis/cycles", findCyclesHandler).Methods("GET")
@@ -341,6 +344,16 @@ func updateTargetStatusHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if req.Status == "" {
+		writeError(w, "Status field is required", http.StatusBadRequest)
+		return
+	}
+
+	if _, err := ninjaStore.GetTarget(targetPath); err != nil {
+		writeError(w, "Target not found", http.StatusNotFound)
+		return
+	}
+
 	if err := ninjaStore.UpdateTargetStatus(targetPath, req.Status); err != nil {
 		writeError(w, fmt.Sprintf("Failed to update status: %v", err), http.StatusInternalServerError)
 		return
@@ -399,6 +412,11 @@ func corsMiddleware(next http.Handler) http.Handler {
 
 		next.ServeHTTP(w, r)
 	})
+}
+
+func optionsHandler(w http.ResponseWriter, r *http.Request) {
+	// CORS headers are already set by the corsMiddleware
+	w.WriteHeader(http.StatusOK)
 }
 
 // Helper function to write error responses

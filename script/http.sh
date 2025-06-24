@@ -156,9 +156,17 @@ test_endpoint "GET" "$API_BASE/rules/nonexistent" "" "404" "Get non-existent rul
 # Non-existent target
 test_endpoint "GET" "$API_BASE/targets/nonexistent.o" "" "404" "Get non-existent target"
 
-# Invalid target status update
-invalid_status='{"invalid": "data"}'
-test_endpoint "PUT" "$API_BASE/targets/main.o/status" "$invalid_status" "400" "Invalid status update"
+# Invalid target status update - missing status field
+invalid_status1='{"invalid": "data"}'
+test_endpoint "PUT" "$API_BASE/targets/main.o/status" "$invalid_status1" "400" "Invalid status update - missing status field"
+
+# Invalid target status update - empty status
+invalid_status3='{"status": ""}'
+test_endpoint "PUT" "$API_BASE/targets/main.o/status" "$invalid_status3" "400" "Invalid status update - empty status"
+
+# Update status for non-existent target
+valid_status='{"status": "building"}'
+test_endpoint "PUT" "$API_BASE/targets/nonexistent.o/status" "$valid_status" "404" "Update status for non-existent target"
 
 # Test CORS preflight
 echo -e "${YELLOW}Testing CORS preflight...${NC}"
