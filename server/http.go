@@ -57,9 +57,9 @@ func StartHTTPServer(ctx context.Context, address, _store string) error {
 
 	// Build endpoints
 	v1.HandleFunc("/builds", createBuildHandler).Methods("POST")
-	v1.HandleFunc("/builds/{id}", getBuildHandler).Methods("GET")
 	v1.HandleFunc("/builds/stats", getBuildStatsHandler).Methods("GET")
 	v1.HandleFunc("/builds/order", getBuildOrderHandler).Methods("GET")
+	v1.HandleFunc("/builds/{id}", getBuildHandler).Methods("GET")
 
 	// Rule endpoints
 	v1.HandleFunc("/rules", createRuleHandler).Methods("POST")

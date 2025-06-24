@@ -89,7 +89,7 @@ build_data='{
     "variables": {
         "cflags": "-O3"
     },
-    "pool": "console",
+    "pool": "highmem_pool",
     "inputs": ["main.c", "utils.c"],
     "outputs": ["main.o"],
     "implicit_deps": ["config.h"],
@@ -104,6 +104,7 @@ test_endpoint "GET" "$API_BASE/builds/build_001" "" "200" "Get build"
 build_data2='{
     "build_id": "build_002",
     "rule": "test_compile",
+    "pool": "highmem_pool",
     "inputs": ["helper.c"],
     "outputs": ["helper.o"]
 }'
