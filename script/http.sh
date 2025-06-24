@@ -128,8 +128,8 @@ test_endpoint "GET" "$API_BASE/targets/main.o" "" "200" "Get specific target"
 # Get target dependencies
 test_endpoint "GET" "$API_BASE/targets/main.o/dependencies" "" "200" "Get target dependencies"
 
-# Get target dependents
-test_endpoint "GET" "$API_BASE/targets/main.c/dependents" "" "200" "Get target dependents"
+# Get target reverse dependencies
+test_endpoint "GET" "$API_BASE/targets/main.c/reverse_dependencies" "" "200" "Get target reverse dependencies"
 
 # Update target status
 status_data='{"status": "building"}'

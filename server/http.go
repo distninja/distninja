@@ -71,7 +71,7 @@ func StartHTTPServer(ctx context.Context, address, _store string) error {
 	// Target endpoints
 	v1.HandleFunc("/targets", getAllTargetsHandler).Methods("GET")
 	v1.HandleFunc("/targets/{path:.*}/dependencies", getTargetDependenciesHandler).Methods("GET")
-	v1.HandleFunc("/targets/{path:.*}/dependents", getTargetDependentsHandler).Methods("GET")
+	v1.HandleFunc("/targets/{path:.*}/reverse_dependencies", getTargetReverseDependenciesHandler).Methods("GET")
 	v1.HandleFunc("/targets/{path:.*}/status", updateTargetStatusHandler).Methods("PUT")
 	v1.HandleFunc("/targets/{path:.*}/status", optionsHandler).Methods("OPTIONS")
 	v1.HandleFunc("/targets/{path:.*}", getTargetHandler).Methods("GET")
@@ -317,18 +317,18 @@ func getTargetDependenciesHandler(w http.ResponseWriter, r *http.Request) {
 	_ = json.NewEncoder(w).Encode(dependencies)
 }
 
-func getTargetDependentsHandler(w http.ResponseWriter, r *http.Request) {
+func getTargetReverseDependenciesHandler(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	targetPath := vars["path"]
 
-	dependents, err := ninjaStore.GetReverseDependencies(targetPath)
+	reverseDependencies, err := ninjaStore.GetReverseDependencies(targetPath)
 	if err != nil {
-		writeError(w, fmt.Sprintf("Failed to get dependents: %v", err), http.StatusInternalServerError)
+		writeError(w, fmt.Sprintf("Failed to get reverse dependencies: %v", err), http.StatusInternalServerError)
 		return
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(dependents)
+	_ = json.NewEncoder(w).Encode(reverseDependencies)
 }
 
 func updateTargetStatusHandler(w http.ResponseWriter, r *http.Request) {

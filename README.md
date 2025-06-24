@@ -57,6 +57,11 @@ go run main.go serve --grpc :9090 --store /tmp/ninja.db
 
 ### 1. HTTP APIs
 
+- **Admin APIs**
+  - `GET /api/v1/health` - Get health check
+  - `GET /api/v1/status` - Get server status
+
+
 - **Build APIs**
   - `POST /api/v1/builds` - Create new build
   - `GET /api/v1/builds/stats` - Get build statistics
@@ -73,7 +78,7 @@ go run main.go serve --grpc :9090 --store /tmp/ninja.db
 - **Target APIs**
   - `GET /api/v1/targets` - Get all targets
   - `GET /api/v1/targets/{path}/dependencies` - Get target dependencies
-  - `GET /api/v1/targets/{path}/dependents` - Get reverse dependencies
+  - `GET /api/v1/targets/{path}/reverse_dependencies` - Get target reverse dependencies
   - `PUT /api/v1/targets/{path}/status` - Update target status
   - `GET /api/v1/targets/{path}` - Get specific target
 
