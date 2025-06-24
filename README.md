@@ -26,17 +26,52 @@ distninja is a distributed build system
 
 ## Usage
 
-### 1. Run grpc server
+### 1. Run http server
 
 ```bash
-distninja serve --grpc <string>
+distninja serve --http <string> --store <string>
 ```
 
-### 2. Run http server
+### 2. Run grpc server
 
 ```bash
-distninja serve --http <string>
+distninja serve --grpc <string> --store <string>
 ```
+
+
+
+## APIs
+
+### HTTP APIs
+
+#### 1. Build APIs
+
+- `POST /api/v1/builds` - Create new build
+- `GET /api/v1/builds/{id}` - Get specific build
+- `GET /api/v1/builds/stats` - Get build statistics
+- `GET /api/v1/builds/order` - Get topological build order
+
+#### 2. Rule APIs:
+
+- `POST /api/v1/rules` - Create new rule
+- `GET /api/v1/rules/{name}` - Get specific rule
+- `GET /api/v1/rules/{name}/targets` - Get targets using a rule
+
+#### 3. Target APIs:
+
+- `GET /api/v1/targets` - Get all targets
+- `GET /api/v1/targets/{path}` - Get specific target
+- `GET /api/v1/targets/{path}/dependencies` - Get target dependencies
+- `GET /api/v1/targets/{path}/dependents` - Get reverse dependencies
+- `PUT /api/v1/targets/{path}/status` - Update target status
+
+#### 4. Analysis APIs:
+
+- `GET /api/v1/analysis/cycles` - Find circular dependencies
+
+#### 5. Debug APIs:
+
+- `GET /api/v1/debug/quads` - Debug quad information
 
 
 

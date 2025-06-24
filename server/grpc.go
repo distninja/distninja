@@ -18,7 +18,7 @@ type DistNinjaService struct {
 	// Add your service fields here
 }
 
-func StartGRPCServer(ctx context.Context, address string) error {
+func StartGRPCServer(ctx context.Context, address, _store string) error {
 	listener, err := net.Listen("tcp", address)
 	if err != nil {
 		return fmt.Errorf("failed to listen on %s: %w", address, err)

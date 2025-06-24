@@ -13,6 +13,7 @@ import (
 var (
 	grpcAddress string
 	httpAddress string
+	storePath   string
 )
 
 var serveCmd = &cobra.Command{
@@ -33,6 +34,7 @@ func init() {
 
 	serveCmd.PersistentFlags().StringVarP(&grpcAddress, "grpc", "g", "", "grpc address")
 	serveCmd.PersistentFlags().StringVarP(&httpAddress, "http", "t", "", "http address")
+	serveCmd.PersistentFlags().StringVarP(&storePath, "store", "s", "store.db", "store path")
 
 	serveCmd.MarkFlagsOneRequired("grpc", "http")
 	serveCmd.MarkFlagsMutuallyExclusive("grpc", "http")
@@ -41,15 +43,15 @@ func init() {
 func runServe(ctx context.Context) error {
 	if grpcAddress != "" {
 		fmt.Printf("Starting gRPC server on %s\n", grpcAddress)
-		return server.StartGRPCServer(ctx, grpcAddress)
+		return server.StartGRPCServer(ctx, grpcAddress, storePath)
 	}
 
 	if httpAddress != "" {
 		fmt.Printf("Starting HTTP server on %s\n", httpAddress)
-		return server.StartHTTPServer(ctx, httpAddress)
+		return server.StartHTTPServer(ctx, httpAddress, storePath)
 	}
 
 	fmt.Printf("Starting HTTP server on %s\n", httpAddress)
 
-	return server.StartHTTPServer(ctx, httpAddress)
+	return server.StartHTTPServer(ctx, httpAddress, storePath)
 }
