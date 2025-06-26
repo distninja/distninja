@@ -90,6 +90,10 @@ go run main.go serve --grpc :9090 --store /tmp/ninja.db
 - **Debug APIs**
   - `GET /api/v1/debug/quads` - Debug quad information
 
+
+- **Load APIs**
+  - `POST /api/v1/load` - Load ninja file
+
 ### 2. gRPC APIs
 
 *TBD*
