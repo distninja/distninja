@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/cobra"
 
 	"github.com/distninja/distninja/server"
+	"github.com/distninja/distninja/utils"
 )
 
 var (
@@ -21,7 +22,12 @@ var serveCmd = &cobra.Command{
 	Short: "Run api server",
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
-		if err := runServe(ctx); err != nil {
+		_path := utils.ExpandTilde(storePath)
+		if _, err := os.Stat(_path); err == nil {
+			_, _ = fmt.Fprintln(os.Stderr, "store path exists:", storePath)
+			os.Exit(1)
+		}
+		if err := runServe(ctx, _path); err != nil {
 			_, _ = fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
 		}
@@ -34,24 +40,24 @@ func init() {
 
 	serveCmd.PersistentFlags().StringVarP(&grpcAddress, "grpc", "g", "", "grpc address")
 	serveCmd.PersistentFlags().StringVarP(&httpAddress, "http", "t", "", "http address")
-	serveCmd.PersistentFlags().StringVarP(&storePath, "store", "s", "store.db", "store path")
+	serveCmd.PersistentFlags().StringVarP(&storePath, "store", "s", "ninja.db", "store path")
 
 	serveCmd.MarkFlagsOneRequired("grpc", "http")
 	serveCmd.MarkFlagsMutuallyExclusive("grpc", "http")
 }
 
-func runServe(ctx context.Context) error {
+func runServe(ctx context.Context, _path string) error {
 	if grpcAddress != "" {
 		fmt.Printf("Starting gRPC server on %s\n", grpcAddress)
-		return server.StartGRPCServer(ctx, grpcAddress, storePath)
+		return server.StartGRPCServer(ctx, grpcAddress, _path)
 	}
 
 	if httpAddress != "" {
 		fmt.Printf("Starting HTTP server on %s\n", httpAddress)
-		return server.StartHTTPServer(ctx, httpAddress, storePath)
+		return server.StartHTTPServer(ctx, httpAddress, _path)
 	}
 
 	fmt.Printf("Starting HTTP server on %s\n", httpAddress)
 
-	return server.StartHTTPServer(ctx, httpAddress, storePath)
+	return server.StartHTTPServer(ctx, httpAddress, _path)
 }
