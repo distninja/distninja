@@ -72,8 +72,8 @@ func StartHTTPServer(ctx context.Context, address, _store string) error {
 
 	router := mux.NewRouter()
 
+	// Admin endpoints
 	router.HandleFunc("/health", healthHandler).Methods("GET")
-
 	v1 := router.PathPrefix("/api/v1").Subrouter()
 	v1.HandleFunc("/status", statusHandler).Methods("GET")
 
