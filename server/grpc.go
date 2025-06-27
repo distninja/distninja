@@ -15,6 +15,7 @@ import (
 	"google.golang.org/grpc/health/grpc_health_v1"
 	"google.golang.org/grpc/reflection"
 
+	"github.com/distninja/distninja/parser"
 	"github.com/distninja/distninja/server/proto"
 	"github.com/distninja/distninja/store"
 )
@@ -389,8 +390,9 @@ func (s *DistNinjaService) LoadNinjaFile(ctx context.Context, req *proto.LoadNin
 		content = req.Content
 	}
 
-	// Parse and load the Ninja file using the same function as HTTP server
-	err = parseNinjaFileForGRPC(s.store, content)
+	// Parse and load the Ninja file
+	ninjaParser := parser.NewNinjaParser(s.store)
+	err = ninjaParser.ParseAndLoad(content)
 	if err != nil {
 		return nil, fmt.Errorf("failed to parse and load Ninja file: %w", err)
 	}
@@ -437,11 +439,4 @@ func loggingInterceptor(
 	}
 
 	return resp, err
-}
-
-// Helper function to parse ninja file content (reusing logic from http.go)
-func parseNinjaFileForGRPC(ninjaStore *store.NinjaStore, content string) error {
-	// This is a simplified version - you might want to extract the full parsing
-	// logic from http.go into a shared module for both HTTP and gRPC servers
-	return parseAndLoadNinjaFile(content)
 }
