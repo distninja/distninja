@@ -47,20 +47,11 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/* \
     && apt-get clean
 
-# Create non-root user
-RUN groupadd -r distninja && useradd -r -g distninja -s /bin/bash distninja
-
 # Set working directory
 WORKDIR /app
 
 # Copy binary from builder stage
 COPY --from=builder /app/bin/distninja /usr/local/bin/distninja
-
-# Change ownership
-RUN chown -R distninja:distninja /app
-
-# Switch to non-root user
-USER distninja
 
 # Expose ports
 EXPOSE 9090
