@@ -60,5 +60,8 @@ EXPOSE 9090
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD distninja --help || exit 1
 
-# Default command
-CMD ["distninja", "serve", "--http", ":9090", "--store", "/tmp/ninja.db"]
+# Create data directory
+RUN mkdir -p /data
+
+# Default command - use /data directory for database
+CMD ["distninja", "serve", "--http", ":9090", "--store", "/data/ninja.db"]
