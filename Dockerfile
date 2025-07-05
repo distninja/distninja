@@ -3,6 +3,10 @@
 # Build stage
 FROM ubuntu:24.04 AS builder
 
+# Build arguments for version info
+ARG BUILD_TIME
+ARG COMMIT_ID
+
 # Set environment variables
 ENV DEBIAN_FRONTEND=noninteractive
 ENV GO_VERSION=1.24.4
@@ -32,8 +36,12 @@ RUN go mod download
 # Copy source code
 COPY . .
 
-# Build the application
-RUN chmod +x script/build.sh && ./script/build.sh
+# Build the application with buildTime and commitID
+RUN buildTime=${BUILD_TIME:-$(date +%FT%T%z)} && \
+    commitID=${COMMIT_ID:-"unknown"} && \
+    ldflags="-s -w -X github.com/distninja/distninja/cmd.BuildTime=$buildTime -X github.com/distninja/distninja/cmd.CommitID=$commitID" && \
+    go env -w GOPROXY=https://goproxy.cn,direct && \
+    CGO_ENABLED=0 GOARCH=$(go env GOARCH) GOOS=$(go env GOOS) go build -ldflags "$ldflags" -o bin/distninja .
 
 # Runtime stage
 FROM ubuntu:24.04
