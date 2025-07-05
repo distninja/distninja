@@ -23,12 +23,6 @@ var serveCmd = &cobra.Command{
 	Run: func(cmd *cobra.Command, args []string) {
 		ctx := context.Background()
 		_path := utils.ExpandTilde(storePath)
-		if _, err := os.Stat(_path); err == nil {
-			if entries, err := os.ReadDir(_path); err == nil && len(entries) > 0 {
-				_, _ = fmt.Fprintln(os.Stderr, "store path contains files:", storePath)
-				os.Exit(1)
-			}
-		}
 		if err := runServe(ctx, _path); err != nil {
 			_, _ = fmt.Fprintln(os.Stderr, err.Error())
 			os.Exit(1)
