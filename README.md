@@ -58,13 +58,19 @@ go run main.go serve --grpc :9090 --store /tmp/ninja.db
 
 ```bash
 # Build image
-docker build -t craftslab/distninja:latest .
+docker build -f Dockerfile -t craftslab/distninja:latest .
 
 # Create data directory
 mkdir -p /tmp/ninja.db
 
 # Run container (default: serve --http :9090 --store /data/ninja.db)
 docker run -p 9090:9090 -v /tmp/ninja.db:/data/ninja.db craftslab/distninja:latest
+
+# Run container for http server (optional)
+docker run -p 9090:9090 -v /tmp/ninja.db:/data/ninja.db craftslab/distninja:latest distninja serve --http :9090 --store /data/ninja.db
+
+# Run container for grpc server (optional)
+docker run -p 9090:9090 -v /tmp/ninja.db:/data/ninja.db craftslab/distninja:latest distninja serve --grpc :9090 --store /data/ninja.db
 ```
 
 
