@@ -75,6 +75,7 @@ RUN mkdir -p /data
 RUN cat > /entrypoint.sh << 'EOF'
 #!/bin/bash
 set -e
+
 is_valid_db() {
     local file="$1"
     if [ ! -f "$file" ]; then
@@ -90,6 +91,7 @@ is_valid_db() {
     fi
     return 0
 }
+
 store_path="/data/ninja.db"
 for i in "${@}"; do
     if [[ "$prev_arg" == "--store" || "$prev_arg" == "-s" ]]; then
@@ -98,11 +100,14 @@ for i in "${@}"; do
     fi
     prev_arg="$i"
 done
+
 mkdir -p "$(dirname "$store_path")"
+
 if [ -f "$store_path" ] && ! is_valid_db "$store_path"; then
     echo "Warning: Database file $store_path exists but appears to be invalid or empty. Removing it to allow reinitialization."
     rm -f "$store_path"
 fi
+
 exec "$@"
 EOF
 
