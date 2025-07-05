@@ -72,46 +72,7 @@ HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
 RUN mkdir -p /data
 
 # Create entrypoint script to handle database initialization
-RUN cat > /entrypoint.sh << 'EOF'
-#!/bin/bash
-set -e
-
-is_valid_db() {
-    local file="$1"
-    if [ ! -f "$file" ]; then
-        return 1
-    fi
-    if [ ! -s "$file" ]; then
-        return 1
-    fi
-    # Check for magic bytes at the beginning of the file
-    local magic=$(head -c 4 "$file" 2>/dev/null | xxd -p 2>/dev/null || echo "")
-    if [ "$magic" != "ed0cdaed" ]; then
-        return 1
-    fi
-    return 0
-}
-
-store_path="/data/ninja.db"
-for i in "${@}"; do
-    if [[ "$prev_arg" == "--store" || "$prev_arg" == "-s" ]]; then
-        store_path="$i"
-        break
-    fi
-    prev_arg="$i"
-done
-
-mkdir -p "$(dirname "$store_path")"
-
-if [ -f "$store_path" ] && ! is_valid_db "$store_path"; then
-    echo "Warning: Database file $store_path exists but appears to be invalid or empty. Removing it to allow reinitialization."
-    rm -f "$store_path"
-fi
-
-exec "$@"
-EOF
-
-RUN chmod +x /entrypoint.sh
+RUN printf '#!/bin/bash\nset -e\n\n# Parse store path from arguments\nstore_path="/data/ninja.db"\nfor i in "${@}"; do\n    if [[ "$prev_arg" == "--store" || "$prev_arg" == "-s" ]]; then\n        store_path="$i"\n        break\n    fi\n    prev_arg="$i"\ndone\n\n# Create directory and handle empty files\nmkdir -p "$(dirname "$store_path")"\nif [ -f "$store_path" ] && [ ! -s "$store_path" ]; then\n    echo "Removing empty database file: $store_path"\n    rm -f "$store_path"\nfi\n\nexec "$@"\n' > /entrypoint.sh && chmod +x /entrypoint.sh
 
 # Set entrypoint
 ENTRYPOINT ["/entrypoint.sh"]
